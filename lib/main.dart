@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:places/screens/places.dart';
 
 import 'theme/body_theme.dart';
 
@@ -27,34 +28,8 @@ class MyApp extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-
-
       ),
-      home: const MyHomePage(),
-    );
-  }
-}
-
-
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key});
-
-
-
-
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-
+      home: const PlacesScreen(),
     );
   }
 }
