@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:places/models/place.dart';
 import 'package:places/providers/user_places.dart';
 import 'package:places/screens/add_place.dart';
 import 'package:places/widgets/places_list.dart';
@@ -27,7 +26,10 @@ class PlacesScreen extends ConsumerWidget {
           ),
         ],
       ),
-      body:   PlacesList(places: userPlace,),
+      body:   Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: PlacesList(places: userPlace,),
+      ),
     );
   }
 }

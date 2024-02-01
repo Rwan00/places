@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:places/providers/user_places.dart';
@@ -12,21 +14,24 @@ class AddPlaceScreen extends ConsumerStatefulWidget {
 
 class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
   final _titleController = TextEditingController();
-  
-  _savePlace(){
+  File? _selectedImage;
+
+  _savePlace() {
     final enterTitle = _titleController.text;
-    if(enterTitle.isEmpty){
+    if (enterTitle.isEmpty || _selectedImage == null) {
       return;
     }
-    ref.read(userPlacesProvider.notifier).addPlace(enterTitle);
+    ref.read(userPlacesProvider.notifier).addPlace(enterTitle,_selectedImage!);
     Navigator.pop(context);
   }
+
   @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
     _titleController.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,13 +52,17 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
                 ),
                 controller: _titleController,
               ),
-              const SizedBox(height: 16,),
-              const ImageInput(),
-              const SizedBox(height: 16,),
+              const SizedBox(
+                height: 16,
+              ),
+               ImageInput(onSelectedImage: (image) => _selectedImage = image,),
+              const SizedBox(
+                height: 16,
+              ),
               ElevatedButton.icon(
-                  onPressed: ()=>_savePlace(),
-                  icon: const Icon(Icons.add),
-                  label: const Text("Add Place"),
+                onPressed: () => _savePlace(),
+                icon: const Icon(Icons.add),
+                label: const Text("Add Place"),
               ),
             ],
           ),
