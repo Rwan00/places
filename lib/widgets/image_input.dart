@@ -11,26 +11,6 @@ class ImageInput extends StatefulWidget {
 }
 
 class _ImageInputState extends State<ImageInput> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 250,
-      width: double.infinity,
-      decoration: BoxDecoration(
-        border: Border.all(
-          width: 1,
-          color: Theme.of(context).colorScheme.primary.withOpacity(0.2),
-        ),
-      ),
-      alignment: Alignment.center,
-      child: TextButton.icon(
-        onPressed: _takeImage,
-        icon: const Icon(Icons.camera),
-        label: const Text("Take Picture"),
-      ),
-    );
-  }
-
   File? _selectedImage;
   void _takeImage() async {
     final imagePicker = ImagePicker();
@@ -41,6 +21,41 @@ class _ImageInputState extends State<ImageInput> {
     if (pickImage == null) {
       return;
     }
-    _selectedImage = File(pickImage.path);
+    setState(() {
+      _selectedImage = File(pickImage.path);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Widget content = TextButton.icon(
+      onPressed: _takeImage,
+      icon: const Icon(Icons.camera),
+      label: const Text("Take Picture"),
+    );
+
+    if (_selectedImage != null) {
+      content = GestureDetector(
+        onTap: _takeImage,
+        child: Image.file(
+          _selectedImage!,
+          fit: BoxFit.cover,
+          width: double.infinity,
+          height: double.infinity,
+        ),
+      );
+    }
+    return Container(
+      height: 250,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        border: Border.all(
+          width: 1,
+          color: Theme.of(context).colorScheme.primary.withOpacity(0.2),
+        ),
+      ),
+      alignment: Alignment.center,
+      child: content,
+    );
   }
 }
