@@ -1,10 +1,69 @@
-import 'package:flutter/material.dart';
+import 'dart:developer';
 
-class LocationInput extends StatelessWidget {
+import 'package:flutter/material.dart';
+import 'package:location/location.dart';
+
+class LocationInput extends StatefulWidget {
   const LocationInput({super.key});
 
   @override
+  State<LocationInput> createState() => _LocationInputState();
+}
+
+class _LocationInputState extends State<LocationInput> {
+  Location? _pickedLocation;
+  bool _isLoading = false;
+
+  void _getCurrentLocation() async {
+    Location location = Location();
+
+    bool serviceEnabled;
+    PermissionStatus permissionGranted;
+    LocationData locationData;
+
+    serviceEnabled = await location.serviceEnabled();
+    if (!serviceEnabled) {
+      serviceEnabled = await location.requestService();
+      if (!serviceEnabled) {
+        return;
+      }
+    }
+
+    permissionGranted = await location.hasPermission();
+    if (permissionGranted == PermissionStatus.denied) {
+      permissionGranted = await location.requestPermission();
+      if (permissionGranted != PermissionStatus.granted) {
+        return;
+      }
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    locationData = await location.getLocation();
+    setState(() {
+      _isLoading = false;
+    });
+    log(locationData.longitude.toString());
+    log(locationData.latitude.toString());
+  }
+
+  @override
   Widget build(BuildContext context) {
+    Widget previewContent = Text(
+      "No Location Choosen!",
+      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+            color: Theme.of(context).colorScheme.onBackground,
+          ),
+      textAlign: TextAlign.center,
+    );
+
+    if (_isLoading) {
+      previewContent = const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
     return Column(
       children: [
         Container(
@@ -17,19 +76,13 @@ class LocationInput extends StatelessWidget {
             ),
           ),
           alignment: Alignment.center,
-          child: Text(
-            "No Place Choosen!",
-            style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                  color: Theme.of(context).colorScheme.onBackground,
-                ),
-            textAlign: TextAlign.center,
-          ),
+          child: previewContent,
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             TextButton.icon(
-              onPressed: () {},
+              onPressed: _getCurrentLocation,
               icon: const Icon(Icons.location_on),
               label: Text(
                 "Get Current Location",
