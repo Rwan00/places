@@ -19,12 +19,12 @@ class Place {
 
 class PlaceLocation {
   final double latitude;
-  final double langitude;
+  final double longitude;
   final String address;
 
   PlaceLocation({
     required this.latitude,
-    required this.langitude,
+    required this.longitude,
     required this.address,
   });
 }

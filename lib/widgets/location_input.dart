@@ -18,6 +18,16 @@ class _LocationInputState extends State<LocationInput> {
   PlaceLocation? _pickedLocation;
   bool _isLoading = false;
 
+  String get locationImage {
+    if (_pickedLocation == null) {
+      return "";
+    }
+
+    final lat = _pickedLocation!.latitude;
+    final lng = _pickedLocation!.longitude;
+    return "https://maps.googleapis.com/maps/api/staticmap?center=$lat,$lng&zoom=16&size=600x300&maptype=roadmap&markers=color:red%7Clabel:Z%7C$lat,$lng&key=AIzaSyDWYIwIwT2Cx7maujw2kxbcvbFKhIGhLOE";
+  }
+
   void _getCurrentLocation() async {
     Location location = Location();
 
@@ -53,13 +63,13 @@ class _LocationInputState extends State<LocationInput> {
       return;
     }
     final url = Uri.parse(
-        "https://maps.googleapis.com/maps/api/geocode/json?latlng=$lat,$lng&key=AIzaSyBMS_NdZbV-ksjIGBdlDXL2GJ47bdc0898");
+        "https://maps.googleapis.com/maps/api/geocode/json?latlng=$lat,$lng&key=AIzaSyDWYIwIwT2Cx7maujw2kxbcvbFKhIGhLOE");
     final res = await http.get(url);
     final resData = json.decode(res.body);
     final address = resData["results"][0]["formatted_address"];
     setState(() {
       _pickedLocation =
-          PlaceLocation(latitude: lat!, langitude: lng!, address: address);
+          PlaceLocation(latitude: lat, longitude: lng, address: address);
       _isLoading = false;
     });
     log(locationData.longitude.toString());
@@ -77,6 +87,15 @@ class _LocationInputState extends State<LocationInput> {
           ),
       textAlign: TextAlign.center,
     );
+
+    if (_pickedLocation != null) {
+      previewContent = Image.network(
+        locationImage,
+        fit: BoxFit.cover,
+        width: double.infinity,
+        height: double.infinity,
+      );
+    }
 
     if (_isLoading) {
       previewContent = const Center(
