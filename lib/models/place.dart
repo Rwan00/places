@@ -11,10 +11,11 @@ class Place {
   final PlaceLocation location;
 
   Place({
+    String? id,
     required this.title,
     required this.image,
     required this.location,
-  }) : id = uuid.v4();
+  }) : id = id?? uuid.v4();
 }
 
 class PlaceLocation {
