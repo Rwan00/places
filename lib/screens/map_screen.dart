@@ -7,7 +7,7 @@ class MapScreen extends StatefulWidget {
   final bool isSelected;
   const MapScreen(
       {this.location = const PlaceLocation(
-          address: "", latitude: 40.711614, longitude: -74.012318),
+          address: "", latitude: 31.2317337, longitude: 29.9704417),
       this.isSelected = true,
       super.key});
 
@@ -25,13 +25,15 @@ class _MapScreenState extends State<MapScreen> {
         actions: [
           if (widget.isSelected)
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context).pop(_pickedLocation);
+              },
               icon: const Icon(Icons.save),
             ),
         ],
       ),
       body: GoogleMap(
-        onTap: (newLocation) {
+        onTap: !widget.isSelected? null:(newLocation) {
           setState(() {
             _pickedLocation = newLocation;
           });
@@ -46,10 +48,11 @@ class _MapScreenState extends State<MapScreen> {
         markers: {
           Marker(
             markerId: const MarkerId("x1"),
-            position: _pickedLocation??LatLng(
-              widget.location.latitude,
-              widget.location.longitude,
-            ),
+            position: _pickedLocation ??
+                LatLng(
+                  widget.location.latitude,
+                  widget.location.longitude,
+                ),
           )
         },
       ),
