@@ -22,7 +22,7 @@ Future<sql.Database> _getDatabase() async {
 class UserPlacesNotifier extends StateNotifier<List<Place>> {
   UserPlacesNotifier() : super(const []);
 
-  void loadPlaces() async {
+  Future<void> loadPlaces() async {
     final sql.Database db = await _getDatabase();
     final data = await db.query("user_places");
 
@@ -48,14 +48,14 @@ class UserPlacesNotifier extends StateNotifier<List<Place>> {
     final fileName = path.basename(image.path);
     final copiedImg = await image.copy("${appDir.path}/$fileName");
     log(copiedImg.path);
-    final newPlace = Place(title: title, image: image, location: location);
+    final newPlace = Place(title: title, image: copiedImg, location: location);
 
     final db = await _getDatabase();
 
     db.insert("user_places", {
       "id": newPlace.id,
       "title": newPlace.title,
-      "image": newPlace.image,
+      "image": newPlace.image.path,
       "lat": newPlace.location.latitude,
       "lng": newPlace.location.longitude,
       "address": newPlace.location.address,
